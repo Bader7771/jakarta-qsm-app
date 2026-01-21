@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:pt="jakarta.faces.passthrough">
+
+<ui:composition template="/templates/template.xhtml">
+
+    <ui:define name="pageTitle">
+        Gestion des créneaux d'examen
+    </ui:define>
+
+    <ui:define name="pageSubtitle">
+        Créez, modifiez et supprimez les créneaux horaires disponibles pour les examens.
+    </ui:define>
+
+    <ui:define name="content">
+
+        <!-- En-tête de page -->
+        <div class="card page-head-card">
+            <div class="page-head-main">
+                <div>
+                    <h2 class="page-title">Gestion des créneaux d'examen</h2>
+                    <p class="page-subtitle">
+                        Gérez les plages horaires pour les inscriptions des candidats.
+                    </p>
+                </div>
+                <h:form>
+                    <h:commandButton value="Retour à l'administration"
+                                     styleClass="theme-btn theme-btn-small btn-ghost theme-secondary"
+                                     action="/admin/dashboard?faces-redirect=true"/>
+                </h:form>
+            </div>
+        </div>
+
+        <!-- Messages globaux -->
+        <h:messages id="growl" 
+                    globalOnly="true"
+                    styleClass="alert-messages"
+                    infoClass="alert alert-info"
+                    warnClass="alert alert-warn"
+                    errorClass="alert alert-error"/>
+
+        <!-- Carte Formulaire -->
+        <div class="card page-form-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <h:outputText value="Modifier le créneau" rendered="#{adminSlotBean.editMode}"/>
+                    <h:outputText value="Ajouter un créneau" rendered="#{!adminSlotBean.editMode}"/>
+                </h3>
+            </div>
+
+            <div class="form-content">
+                <h:form id="slotForm">
+
+                    <div class="form-row">
+                        
+                        <!-- Date de l'examen -->
+                        <div class="form-group">
+                            <label class="form-label" for="dateExam">
+                                Date de l'examen <span class="required">*</span>
+                            </label>
+                            <h:inputText id="dateExam"
+                                         value="#{adminSlotBean.slot.dateExam}"
+                                         styleClass="theme-input"
+                                         pt:type="date"
+                                         required="true"
+                                         requiredMessage="La date est obligatoire">
+                                <f:converter converterId="localDateConverter"/>
+                            </h:inputText>
+                            <h:message for="dateExam" styleClass="error-message"/>
+                        </div>
+
+                        <!-- Heure de début -->
+                        <div class="form-group">
+                            <label class="form-label" for="startTime">
+                                Heure de début <span class="required">*</span>
+                            </label>
+                            <h:inputText id="startTime"
+                                         value="#{adminSlotBean.slot.startTime}"
+                                         styleClass="theme-input"
+                                         pt:type="time"
+                                         required="true"
+                                         requiredMessage="L'heure de début est obligatoire">
+                                <f:converter converterId="localTimeConverter"/>
+                            </h:inputText>
+                            <h:message for="startTime" styleClass="error-message"/>
+                        </div>
+
+                        <!-- Heure de fin -->
+                        <div class="form-group">
+                            <label class="form-label" for="endTime">
+                                Heure de fin <span class="required">*</span>
+                            </label>
+                            <h:inputText id="endTime"
+                                         value="#{adminSlotBean.slot.endTime}"
+                                         styleClass="theme-input"
+                                         pt:type="time"
+                                         required="true"
+                                         requiredMessage="L'heure de fin est obligatoire">
+                                <f:converter converterId="localTimeConverter"/>
+                            </h:inputText>
+                            <h:message for="endTime" styleClass="error-message"/>
+                        </div>
+
+                    </div>
+
+                    <!-- Actions du formulaire -->
+                    <div class="form-actions">
+                        
+                        <!-- BOUTON AVEC STYLE INLINE FORCÉ -->
+                        <h:commandButton value="#{adminSlotBean.editMode ? 'Enregistrer les modifications' : 'Ajouter le créneau'}"
+                                         styleClass="theme-btn theme-primary"
+                                         action="#{adminSlotBean.ajouter}"
+                                         style="background-color: #007bff !important; color: white !important; padding: 12px 24px; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer;">
+                            <f:ajax execute="@form" render="slotForm :tableForm:slotsTable growl"/>
+                        </h:commandButton>
+
+                        <h:commandButton value="Annuler"
+                                         styleClass="theme-btn btn-ghost theme-secondary"
+                                         action="#{adminSlotBean.cancelEdit}"
+                                         immediate="true"
+                                         rendered="#{adminSlotBean.editMode}"
+                                         style="background-color: #6c757d !important; color: white !important; padding: 12px 24px; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer;">
+                            <f:ajax execute="@this" render="slotForm growl"/>
+                        </h:commandButton>
+                        
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+        <!-- Carte Tableau -->
+        <div class="card page-table-card">
+            <div class="card-header">
+                <h3 class="card-title">Créneaux existants</h3>
+                <p class="card-subtitle">
+                    #{adminSlotBean.slots.size()} créneau(x) configuré(s)
+                </p>
+            </div>
+
+            <div class="table-wrap">
+                <h:form id="tableForm">
+
+                    <h:dataTable id="slotsTable"
+                                 value="#{adminSlotBean.slots}"
+                                 var="s"
+                                 styleClass="admin-table theme-table"
+                                 rendered="#{not empty adminSlotBean.slots}">
+
+                        <h:column>
+                            <f:facet name="header">Date</f:facet>
+                            <h:outputText value="#{s.dateExam}">
+                                <f:converter converterId="localDateConverter"/>
+                            </h:outputText>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Heure de début</f:facet>
+                            <h:outputText value="#{s.startTime}">
+                                <f:converter converterId="localTimeConverter"/>
+                            </h:outputText>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Heure de fin</f:facet>
+                            <h:outputText value="#{s.endTime}">
+                                <f:converter converterId="localTimeConverter"/>
+                            </h:outputText>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Actions</f:facet>
+
+                            <div class="table-actions">
+                                
+                                <h:commandButton value="Modifier"
+                                                 styleClass="theme-btn-small btn-ghost theme-primary"
+                                                 immediate="true"
+                                                 style="background-color: #28a745 !important; color: white !important; padding: 8px 16px; border: none; border-radius: 5px; font-size: 13px; cursor: pointer;">
+                                    <f:ajax listener="#{adminSlotBean.edit(s)}"
+                                            render=":slotForm growl"/>
+                                </h:commandButton>
+
+                                <h:commandButton value="Supprimer"
+                                                 styleClass="theme-btn-small btn-ghost btn-danger"
+                                                 action="#{adminSlotBean.supprimerAvecSessions(s.id)}"
+                                                 onclick="return confirm('⚠️ Attention : Cette action supprimera le créneau ainsi que toutes les sessions et tentatives associées. Continuer ?');"
+                                                 style="background-color: #dc3545 !important; color: white !important; padding: 8px 16px; border: none; border-radius: 5px; font-size: 13px; cursor: pointer;">
+                                    <f:ajax execute="@this" render="slotsTable growl"/>
+                                </h:commandButton>
+                                
+                            </div>
+                        </h:column>
+
+                    </h:dataTable>
+
+                    <!-- Message si aucun créneau -->
+                    <div class="empty-state" rendered="#{empty adminSlotBean.slots}">
+                        <p>Aucun créneau configuré pour le moment.</p>
+                        <p>Utilisez le formulaire ci-dessus pour en ajouter un.</p>
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>
+</html>

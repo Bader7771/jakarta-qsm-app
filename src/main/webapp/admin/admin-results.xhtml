@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<ui:composition template="/templates/template.xhtml">
+
+    <ui:define name="pageTitle">
+        Résultats des examens
+    </ui:define>
+
+    <ui:define name="pageSubtitle">
+        Consulte et gère les résultats de tous les tests terminés.
+    </ui:define>
+
+    <ui:define name="content">
+
+        <!-- En-tête de page -->
+        <div class="card page-head-card">
+            <div class="page-head-main">
+                <div>
+                    <h2 class="page-title">Résultats des examens</h2>
+                    <p class="page-subtitle">
+                        Vue d'ensemble des tentatives terminées par candidat et thème.
+                    </p>
+                </div>
+
+                <h:form>
+                    <h:commandButton value="Retour à l'administration"
+                                     styleClass="theme-btn theme-btn-small btn-ghost theme-secondary"
+                               action="/admin/dashboard?faces-redirect=true"/>      
+                </h:form>
+            </div>
+        </div>
+
+        <!-- Tableau des résultats -->
+        <div class="card page-table-card">
+            <div class="card-header">
+                <h3 class="card-title">Tentatives terminées</h3>
+                <p class="card-subtitle">
+                    Liste des tests terminés avec score et actions de suppression.
+                </p>
+            </div>
+
+            <div class="table-wrap">
+                <h:form id="resultsForm">
+
+                    <h:dataTable id="resultsTable"
+                                 value="#{adminResultsBean.finishedAttempts}"
+                                 var="a"
+                                 styleClass="admin-table theme-table">
+
+                        <h:column>
+                            <f:facet name="header">Code session</f:facet>
+                            #{a.testSession.sessionCode}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Candidat</f:facet>
+                            #{a.testSession.candidate.nom} #{a.testSession.candidate.prenom}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Thème</f:facet>
+                            #{a.theme.libelle}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Date début</f:facet>
+                            <h:outputText value="#{a.startTime}">
+                                <f:convertDateTime type="localDateTime"
+                                                   pattern="dd/MM/yyyy HH:mm" />
+                            </h:outputText>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Score</f:facet>
+                            #{a.score} / #{a.theme.questions.size()}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Actions</f:facet>
+
+                            <div class="table-actions">
+
+                                <!-- Supprimer le candidat complètement -->
+                                <h:commandButton value="Supprimer le candidat"
+                                                 styleClass="theme-btn-small btn-ghost btn-danger"
+                                                 action="#{adminResultsBean.supprimerCandidatComplet(a.testSession.candidate)}"
+                                                 onclick="return confirm('Supprimer définitivement ce candidat et tous ses résultats ?');">
+                                    <f:ajax execute="@this"
+                                            render="resultsTable"/>
+                                </h:commandButton>
+
+                            </div>
+                        </h:column>
+
+                    </h:dataTable>
+
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>
+</html>

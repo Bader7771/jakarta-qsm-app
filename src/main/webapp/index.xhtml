@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <title>TestPlatform - Dashboard</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <h:outputStylesheet library="css" name="site.css" />
+</h:head>
+
+<h:body class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-mark">T</div>
+            <span class="logo-text">TestPlatform</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item nav-item--active">
+                <span class="nav-icon">📊</span>
+                <span>Tableau de bord</span>
+            </a>
+            <a href="#themes" class="nav-item">
+                <span class="nav-icon">📚</span>
+                <span>Thèmes</span>
+            </a>
+            
+        </nav>
+
+        <div class="sidebar-bottom">
+            <span class="sidebar-badge">v2.0</span>
+        </div>
+    </aside>
+
+    <!-- MAIN LAYOUT -->
+    <div class="layout">
+
+        <h:form id="mainForm">
+
+            <!-- HEADER -->
+            <header class="app-header">
+                <div class="header-left">
+                    <div class="header-title">
+                        <h1>Bonjour, #{userBean.connecte ? userBean.utilisateurConnecte.nom : 'Candidat'} 👋</h1>
+                        <span class="header-subtitle">
+                            Vous avez 3 tests prévus aujourd'hui
+                        </span>
+                    </div>
+                </div>
+
+                <div class="header-center">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <h:inputText styleClass="search-input"
+                                     placeholder="Rechercher un thème, un test..." />
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Non connecté -->
+                    <h:panelGroup rendered="#{not userBean.connecte}">
+                        <h:commandButton value="S'inscrire"
+                                         styleClass="btn btn-primary"
+                                         action="registrer?faces-redirect=true" />
+                        <h:commandButton value="Connexion"
+                                         styleClass="btn btn-outline"
+                                         action="login-test?faces-redirect=true" />
+                    </h:panelGroup>
+
+                    <!-- Connecté -->
+                    <h:panelGroup rendered="#{userBean.connecte}" styleClass="user-chip">
+                        <div class="user-initials">
+                            #{userBean.utilisateurConnecte.nom.substring(0,1)}#{userBean.utilisateurConnecte.prenom.substring(0,1)}
+                        </div>
+                        <div class="user-meta">
+                            <span class="user-name">
+                                #{userBean.utilisateurConnecte.nom} #{userBean.utilisateurConnecte.prenom}
+                            </span>
+                            <span class="user-role">Candidat</span>
+                        </div>
+                        <h:commandLink styleClass="user-logout"
+                                       action="#{userBean.logout}">
+                            Déconnexion
+                        </h:commandLink>
+                    </h:panelGroup>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT -->
+            <main class="app-main">
+
+                <h:messages globalOnly="true" styleClass="jsf-messages" />
+
+                <!-- INTRO -->
+                <section class="app-intro">
+                    <h2>🎯 Plateforme d'évaluation en ligne</h2>
+                    <p>
+                        Bienvenue sur TestPlatform, votre solution complète pour créer, gérer et
+                        passer des tests techniques. Suivez vos performances, planifiez vos
+                        sessions et progressez dans vos compétences.
+                    </p>
+                    <p>
+                        Accédez à des statistiques détaillées, des analyses de progression et
+                        des recommandations personnalisées pour optimiser votre apprentissage.
+                    </p>
+                </section>
+
+                <!-- STATS -->
+                <section class="stats-grid">
+                    <div class="stat-card stat-card--primary">
+                        <div class="stat-header">
+                            <div class="stat-icon">📝</div>
+                            <span class="stat-trend stat-trend--up">↗ +24%</span>
+                        </div>
+                        <div class="stat-label">Total Candidats</div>
+                        <div class="stat-value">+120</div>
+                        <div class="stat-foot">vs la semaine dernière</div>
+                    </div>
+
+                    <div class="stat-card stat-card--success">
+                        <div class="stat-header">
+                            <div class="stat-icon">✅</div>
+                            <span class="stat-trend stat-trend--down">↘ 14%</span>
+                        </div>
+                        <div class="stat-label">Tests réussis</div>
+                        <div class="stat-value">+24</div>
+                        <div class="stat-foot">vs la semaine dernière</div>
+                    </div>
+
+                    <div class="stat-card stat-card--warning">
+                        <div class="stat-header">
+                            <div class="stat-icon">💼</div>
+                            <span class="stat-trend stat-trend--up">↗ 30%</span>
+                        </div>
+                        <div class="stat-label">Offres d'emploi</div>
+                        <div class="stat-value">+6</div>
+                        <div class="stat-foot">vs la semaine dernière</div>
+                    </div>
+                </section>
+
+                <!-- HERO / PIPELINE -->
+                <section class="hero-grid">
+                    <div class="hero-panel">
+                        <h2>🚀 Lancez votre prochain test</h2>
+                        <p>
+                            Choisissez parmi nos thèmes variés, réservez votre créneau horaire
+                            et passez votre test dans les meilleures conditions. Des résultats
+                            instantanés et des analyses détaillées vous attendent.
+                        </p>
+
+                        <div class="hero-actions">
+                            <h:commandButton value="Démarrer maintenant"
+                                             styleClass="btn btn-cta"
+                                             action="login-test?faces-redirect=true" />
+                            <h:outputLink value="#themes"
+                                          styleClass="btn btn-outline btn-lg">
+                                Voir les thèmes
+                            </h:outputLink>
+                        </div>
+                    </div>
+
+                    <div class="hero-panel hero-panel--light">
+                        <h3>📅 Prochains tests planifiés</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Programmation Java</div>
+                                    <div class="timeline-meta">Demain • 10:30 - 11:30</div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot timeline-dot--muted"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Base de données SQL</div>
+                                    <div class="timeline-meta">Jeudi • Créneau disponible</div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot timeline-dot--muted"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Framework Spring</div>
+                                    <div class="timeline-meta">Vendredi • 14:00 - 15:00</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- THEMES TABLE -->
+                <section id="themes" class="themes-section">
+                    <div class="section-header">
+                        <h2>📚 Thèmes disponibles</h2>
+                        <span class="section-subtitle">
+                            Explorez nos thèmes et commencez votre évaluation
+                        </span>
+                    </div>
+
+                    <h:dataTable value="#{userHomeBean.themesDisponibles}"
+                                 var="t"
+                                 styleClass="table"
+                                 headerClass="table-header"
+                                 rowClasses="table-row">
+
+                        <h:column>
+                            <f:facet name="header">Thème</f:facet>
+                            <span class="theme-name">#{t.libelle}</span>
+                        </h:column>
+
+                        <h:column>
+    <f:facet name="header">Questions</f:facet>
+    <span class="badge badge--soft">Disponible</span>
+</h:column>
+                        
+
+                        <h:column>
+                            <f:facet name="header">Difficulté</f:facet>
+                            <span class="badge badge--success">Tous niveaux</span>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Durée estimée</f:facet>
+                            <span style="color: var(--text-secondary);">45 min</span>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Action</f:facet>
+                            <h:commandButton value="Commencer"
+                                             styleClass="btn btn-small btn-primary"
+                                             action="login-test?faces-redirect=true" />
+                        </h:column>
+                    </h:dataTable>
+                </section>
+
+            </main>
+
+        </h:form>
+
+    </div>
+
+</h:body>
+</html>

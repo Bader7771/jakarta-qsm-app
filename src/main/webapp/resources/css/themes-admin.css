@@ -1,0 +1,193 @@
+/* ====== PAGE THEMES (ajouterTheme.xhtml) ====== */
+
+#formTheme .card:first-of-type {
+    margin-bottom: 16px;
+}
+
+/* Libellé + input */
+#formTheme label[for="libelle"] {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 6px;
+    display: inline-block;
+}
+
+#formTheme #libelle {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    color: #111827;
+    background: #ffffff;
+    transition:
+        border-color 0.18s ease-out,
+        box-shadow 0.18s ease-out,
+        transform 0.12s ease-out;
+}
+
+#formTheme #libelle:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    transform: translateY(-1px);
+}
+
+/* Messages */
+#formTheme #messages {
+    font-size: 12px;
+    color: #b91c1c;
+}
+
+/* ====== BOUTONS ULTRA PRO ====== */
+
+#formTheme .btn {
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    padding: 7px 18px;
+    cursor: pointer;
+    background: none;
+    color: #111827;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    transition:
+        background 0.18s ease-out,
+        color 0.18s ease-out,
+        border-color 0.18s ease-out,
+        box-shadow 0.18s ease-out,
+        transform 0.18s ease-out;
+}
+
+/* Effet de halo sur le curseur pour tous les boutons */
+#formTheme .btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
+                                rgba(255, 255, 255, 0.5),
+                                transparent 55%);
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+    pointer-events: none;
+}
+
+#formTheme .btn:hover::after {
+    opacity: 0.65;
+}
+
+/* bouton principal */
+#formTheme .btn-cta {
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    border-color: #1d4ed8;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.3);
+}
+
+#formTheme .btn-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.4);
+}
+
+/* bouton secondaire (Retour, Modifier, Supprimer) */
+#formTheme .btn-ghost {
+    background: #ffffff;
+    border-color: #e5e7eb;
+    color: #374151;
+}
+
+#formTheme .btn-ghost:hover {
+    background: #f3f4f6;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+/* curseur main sur hover */
+#formTheme .btn:hover {
+    cursor: pointer;
+}
+
+/* ====== TABLEAU ULTRA PRO DES THEMES ====== */
+
+#formTheme .admin-table {
+    margin-top: 6px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+#formTheme .admin-table thead {
+    background: #f3f4f6;
+}
+
+#formTheme .admin-table th,
+#formTheme .admin-table td {
+    padding: 8px 12px;
+}
+
+#formTheme .admin-table th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+}
+
+#formTheme .admin-table tbody tr:nth-child(every-2) {
+    background: #f9fafb;
+}
+
+#formTheme .admin-table tbody tr:hover td {
+    background: #eff6ff;
+}
+
+/* colonnes largeur & centrage */
+#formTheme .admin-table th:nth-child(1),
+#formTheme .admin-table td:nth-child(1) {
+    width: 55%;
+}
+
+#formTheme .admin-table th:nth-child(2),
+#formTheme .admin-table td:nth-child(2),
+#formTheme .admin-table th:nth-child(3),
+#formTheme .admin-table td:nth-child(3) {
+    width: 22.5%;
+    text-align: center;
+}
+
+/* boutons dans la table */
+#formTheme .admin-table .btn {
+    font-size: 12px;
+    padding: 4px 12px;
+}
+
+/* ====== Responsive ====== */
+
+@media (max-width: 768px) {
+    #formTheme .card:first-of-type > div {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #formTheme .card:first-of-type > div > div:last-child {
+        justify-content: flex-start;
+    }
+
+    #formTheme .card:first-of-type .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    #formTheme .admin-table th:nth-child(2),
+    #formTheme .admin-table th:nth-child(3),
+    #formTheme .admin-table td:nth-child(2),
+    #formTheme .admin-table td:nth-child(3) {
+        white-space: nowrap;
+    }
+}

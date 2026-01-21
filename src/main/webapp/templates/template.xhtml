@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core">
+
+<h:head>
+    <title><ui:insert name="title">Admin · TestPlatform</ui:insert></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <h:outputStylesheet library="css" name="admin-template.css" />
+</h:head>
+
+<h:body class="admin-shell">
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon">T</div>
+                <div class="brand-meta">
+                    <div class="brand-title">TestPlatform</div>
+                    <div class="brand-subtitle">Administration</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <!-- toutes ces vues sont dans /admin -->
+
+                <!-- Dashboard => /admin/dashboard.xhtml -->
+                <h:link outcome="dashboard" styleClass="nav-item">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Dashboard</span>
+                </h:link>
+
+                <!-- Candidats => /admin/admin-candidates.xhtml -->
+                <h:link outcome="admin-candidates" styleClass="nav-item">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">Candidats</span>
+                </h:link>
+
+                <!-- Créneaux => /admin/admin-slots.xhtml -->
+                <h:link outcome="admin-slots" styleClass="nav-item">
+                    <span class="nav-icon">🕒</span>
+                    <span class="nav-label">Créneaux</span>
+                </h:link>
+
+                <!-- Thèmes => /admin/ajouterTheme.xhtml -->
+                <h:link outcome="ajouterTheme" styleClass="nav-item">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-label">Thèmes</span>
+                </h:link>
+
+                <!-- Questions => /admin/ajouterQuestion.xhtml -->
+                <h:link outcome="ajouterQuestion" styleClass="nav-item">
+                    <span class="nav-icon">❓</span>
+                    <span class="nav-label">Questions</span>
+                </h:link>
+
+                <!-- Réponses => /admin/ajouterReponse.xhtml -->
+                <h:link outcome="ajouterReponse" styleClass="nav-item">
+                    <span class="nav-icon">✏️</span>
+                    <span class="nav-label">Réponses</span>
+                </h:link>
+
+                <!-- Résultats => /admin/admin-results.xhtml -->
+                <h:link outcome="admin-results" styleClass="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Résultats</span>
+                </h:link>
+            </nav>
+
+            <div class="sidebar-footer">
+                <span class="user-label">Connecté en tant que</span>
+                <span class="user-name">
+                    <ui:insert name="adminName">Administrateur</ui:insert>
+                </span>
+
+                <!-- Retour au site => /index.xhtml à la racine -->
+                <h:link outcome="/index" styleClass="logout-link">
+                    ⇦ Retour au site
+                </h:link>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <main class="main-area">
+
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>
+                        <ui:insert name="pageTitle">Dashboard</ui:insert>
+                    </h1>
+                    <p>
+                        <ui:insert name="pageSubtitle">
+                            Vue d’ensemble des activités de la plateforme.
+                        </ui:insert>
+                    </p>
+                </div>
+
+                <div class="topbar-meta">
+                    <span class="badge-env">Administration</span>
+                    <span class="badge-date">
+                        <h:outputText value="#{now}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                    </span>
+                </div>
+            </header>
+
+            <section class="main-content">
+                <ui:insert name="content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Bienvenue sur l’espace Admin</h2>
+                            <p class="card-subtitle">
+                                Utilisez le menu de gauche pour gérer les candidats,
+                                créneaux, thèmes, questions, réponses et résultats.
+                            </p>
+                        </div>
+                    </div>
+                </ui:insert>
+            </section>
+
+        </main>
+
+    </div>
+
+</h:body>
+</html>

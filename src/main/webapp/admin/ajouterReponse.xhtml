@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<ui:composition template="/templates/template.xhtml">
+
+    <ui:define name="pageTitle">
+        Gestion des réponses
+    </ui:define>
+
+    <ui:define name="pageSubtitle">
+        Ajoute, modifie et supprime les réponses associées à chaque question.
+    </ui:define>
+
+    <ui:define name="content">
+
+        <!-- En-tête secondaire -->
+        <div class="card page-head-card">
+            <div class="page-head-main">
+                <div>
+                    <h2 class="page-title">Réponses</h2>
+                    <p class="page-subtitle">
+                        Gère les réponses correctes et incorrectes pour chaque question.
+                    </p>
+                </div>
+
+                <h:form>
+                    <h:commandButton value="Retour à l'administration"
+                                     styleClass="theme-btn theme-btn-small btn-ghost theme-secondary"
+                                     action="/admin/dashboard?faces-redirect=true"/>
+                </h:form>
+            </div>
+        </div>
+
+        <!-- ================= FORM AJOUT ================= -->
+        <div class="card page-form-card">
+            <h:form id="formAjout">
+
+                <div class="theme-head-grid">
+
+                    <!-- Filtre par thème -->
+                    <div class="theme-field">
+                        <label class="theme-field-label">Thème</label>
+                        <h:selectOneMenu value="#{reponseBean.selectedThemeId}"
+                                         styleClass="theme-input">
+                            <f:selectItem itemLabel="-- Choisir un thème --"
+                                          itemValue="#{null}"/>
+                            <f:selectItems value="#{reponseBean.themes}"
+                                           var="t"
+                                           itemValue="#{t.id}"
+                                           itemLabel="#{t.libelle}"/>
+                            <f:ajax listener="#{reponseBean.loadQuestionsByTheme}"
+                                    render="formAjout:questionMenu formListe:zoneReponses formAjout"/>
+                        </h:selectOneMenu>
+                    </div>
+
+                    <!-- Question filtrée par thème -->
+                    <div class="theme-field">
+                        <label class="theme-field-label">Question</label>
+                        <h:selectOneMenu id="questionMenu"
+                                         value="#{reponseBean.selectedQuestionId}"
+                                         required="true"
+                                         styleClass="theme-input">
+                            <f:selectItem itemLabel="-- Choisir une question --"
+                                          itemValue="#{null}"/>
+                            <f:selectItems value="#{reponseBean.questions}"
+                                           var="q"
+                                           itemValue="#{q.id}"
+                                           itemLabel="#{q.contenu}"/>
+
+                            <f:ajax listener="#{reponseBean.loadReponses}"
+                                    render="formListe:zoneReponses formAjout"/>
+                        </h:selectOneMenu>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="theme-actions">
+                        <h:commandButton value="Enregistrer"
+                                         styleClass="theme-btn btn-cta theme-primary"
+                                         action="#{reponseBean.ajouterReponse}">
+                            <f:ajax execute="@form"
+                                    render="formListe:zoneReponses formAjout:messages formAjout"/>
+                        </h:commandButton>
+                    </div>
+                </div>
+
+                <!-- Zone réponse -->
+                <div class="theme-field theme-field-full">
+                    <label class="theme-field-label">Réponse</label>
+                    <h:inputText value="#{reponseBean.reponse.contenu}"
+                                 required="true"
+                                 styleClass="theme-input"/>
+                </div>
+
+                <div class="theme-field theme-field-full">
+                    <h:selectBooleanCheckbox value="#{reponseBean.reponse.correct}"/>
+                    <h:outputText value=" Réponse correcte"/>
+                </div>
+
+                <h:messages id="messages"
+                            globalOnly="true"
+                            showDetail="true"
+                            styleClass="theme-messages"/>
+
+            </h:form>
+        </div>
+
+        <!-- ================= FORM LISTE ================= -->
+        <div class="card page-table-card">
+            <div class="card-header">
+                <h3 class="card-title">Réponses existantes</h3>
+                <p class="card-subtitle">
+                    Liste des réponses pour la question sélectionnée, avec actions rapides.
+                </p>
+            </div>
+
+            <div class="table-wrap">
+                <h:form id="formListe">
+                    <h:panelGroup id="zoneReponses">
+
+                        <h:dataTable value="#{reponseBean.reponses}"
+                                     var="r"
+                                     styleClass="admin-table theme-table">
+
+                            <h:column>
+                                <f:facet name="header">Réponse</f:facet>
+                                #{r.contenu}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Correcte</f:facet>
+                                #{r.correct ? 'Oui' : 'Non'}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Actions</f:facet>
+
+                                <div class="table-actions">
+
+                                    <!-- Modifier -->
+                                    <h:commandButton value="Modifier"
+                                                     styleClass="theme-btn-small btn-ghost"
+                                                     action="#{reponseBean.editReponse(r)}">
+                                        <f:ajax execute="@this"
+                                                render="formAjout"/>
+                                    </h:commandButton>
+
+                                    <!-- Supprimer -->
+                                    <h:commandButton value="Supprimer"
+                                                     styleClass="theme-btn-small btn-ghost btn-danger"
+                                                     action="#{reponseBean.supprimerReponse(r.id)}"
+                                                     onclick="return confirm('Supprimer cette réponse ?');">
+                                        <f:ajax execute="@this"
+                                                render="formListe:zoneReponses"/>
+                                    </h:commandButton>
+
+                                </div>
+                            </h:column>
+
+                        </h:dataTable>
+
+                    </h:panelGroup>
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+<h:head>
+    <title>Accès au test</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <h:outputStylesheet library="css" name="login-test.css" />
+    <!-- JS compte à rebours -->
+    <h:outputScript library="js" name="countdown.js" />
+</h:head>
+
+<h:body class="login-shell">
+
+    <div class="login-layout">
+
+        <!-- HEADER -->
+        <header class="login-header">
+            <div class="brand">
+                <div class="brand-icon">T</div>
+                <div class="brand-meta">
+                    <div class="brand-title">TestPlatform</div>
+                    <div class="brand-subtitle">Accès au test</div>
+                </div>
+            </div>
+
+            <div class="header-text">
+                <h1>Accéder à votre test</h1>
+                <p>Entrez votre code de session et choisissez le thème pour démarrer.</p>
+            </div>
+        </header>
+
+        <!-- CARTE PRINCIPALE -->
+        <main class="login-main">
+            <div class="login-card">
+
+                <h2 class="login-title">Connexion au test</h2>
+                <p class="login-subtitle">
+                    Vérifiez que le créneau et le thème affichés correspondent bien à votre session.
+                </p>
+
+                <h:form id="loginForm" styleClass="login-form">
+
+                    <!-- Code de session -->
+                    <div class="form-field form-field--full">
+                        <label for="code">Code de session *</label>
+                        <h:inputText id="code"
+                                     value="#{testLoginBean.sessionCode}"
+                                     required="true"
+                                     styleClass="input" />
+                        <h:message for="code" styleClass="field-message" />
+                    </div>
+
+                    <!-- Choix du thème -->
+                    <div class="form-field form-field--full">
+                        <label for="theme">Thème *</label>
+                        <h:selectOneMenu id="theme"
+                                         value="#{testLoginBean.selectedThemeId}"
+                                         required="true"
+                                         styleClass="input select-input">
+                            <f:selectItems value="#{testLoginBean.themes}"
+                                           var="t"
+                                           itemValue="#{t.id}"
+                                           itemLabel="#{t.libelle}" />
+                        </h:selectOneMenu>
+                        <h:message for="theme" styleClass="field-message" />
+                    </div>
+
+                    <!-- Infos de créneau + compte à rebours -->
+                    <h:panelGroup id="slotInfo"
+                                  layout="block"
+                                  rendered="#{not empty testLoginBean.slotDate}"
+                                  styleClass="slot-info">
+
+                        <p class="slot-text">
+                            Votre créneau est le
+                            <span class="slot-highlight">
+                                #{testLoginBean.slotDate}
+                            </span>
+                            de
+                            <span class="slot-highlight">
+                                #{testLoginBean.slotStartTime}
+                            </span>
+                            à
+                            <span class="slot-highlight">
+                                #{testLoginBean.slotEndTime}
+                            </span>.
+                        </p>
+
+                        <p id="countdownMessage" class="countdown-text"></p>
+
+                        <h:outputScript>
+                            initCountdown(
+                                "#{testLoginBean.slotDate}",
+                                "#{testLoginBean.slotStartTime}",
+                                "countdownMessage"
+                            );
+                        </h:outputScript>
+
+                    </h:panelGroup>
+
+                    <!-- Messages globaux -->
+                    <h:messages globalOnly="true" styleClass="jsf-messages" />
+
+                    <!-- Actions -->
+                    <div class="form-actions">
+                        <h:commandButton value="Rafraîchir le statut"
+                                         actionListener="#{testLoginBean.checkValidation}"
+                                         styleClass="btn btn-ghost">
+                            <f:ajax render="loginForm" />
+                        </h:commandButton>
+
+                        <h:commandButton value="Entrer dans le test"
+                                         action="#{testLoginBean.entrer}"
+                                         styleClass="btn btn-cta" />
+                    </div>
+
+                </h:form>
+
+            </div>
+        </main>
+
+    </div>
+
+</h:body>
+</html>

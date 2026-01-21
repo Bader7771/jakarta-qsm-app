@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+<h:head>
+    <title>Choix du créneau</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <h:outputStylesheet library="css" name="choose-slot.css" />
+</h:head>
+
+<h:body class="slot-shell">
+
+    <div class="slot-layout">
+
+        <!-- HEADER -->
+        <header class="slot-header">
+            <div class="brand">
+                <div class="brand-icon">T</div>
+                <div class="brand-meta">
+                    <div class="brand-title">TestPlatform</div>
+                    <div class="brand-subtitle">Choix du créneau</div>
+                </div>
+            </div>
+
+            <div class="header-text">
+                <h1>Choisir un créneau d'examen</h1>
+                <p>Sélectionnez le jour et l’horaire de passage pour votre session.</p>
+            </div>
+        </header>
+
+        <!-- CARTE PRINCIPALE -->
+        <main class="slot-main">
+            <div class="slot-card">
+
+                <h2 class="slot-title">Sélection du créneau</h2>
+                <p class="slot-subtitle">
+                    Les créneaux affichés ci-dessous dépendent des sessions encore disponibles.
+                </p>
+
+                <h:form styleClass="slot-form">
+
+                    <div class="form-field form-field--full">
+                        <label for="slotSelect">Créneau d’examen *</label>
+                        <h:selectOneMenu id="slotSelect"
+                                         value="#{examSlotBean.selectedSlotId}"
+                                         required="true"
+                                         styleClass="input select-input">
+                            <f:selectItem itemLabel="-- Choisir un créneau --" itemValue="" />
+                            <f:selectItems value="#{examSlotBean.availableSlots}"
+                                           var="s"
+                                           itemValue="#{s.id}"
+                                           itemLabel="#{s.dateExam} - #{s.startTime} / #{s.endTime}" />
+                        </h:selectOneMenu>
+                    </div>
+
+                    <h:messages globalOnly="true"
+                                showDetail="true"
+                                styleClass="jsf-messages" />
+
+                    <div class="form-actions">
+
+                        <!-- Retour vers inscription.xhtml -->
+                        <h:outputLink value="#{request.contextPath}/inscription.xhtml"
+                                      styleClass="btn btn-ghost">
+                            Retour
+                        </h:outputLink>
+
+                        <h:commandButton value="Continuer"
+                                         action="#{examSlotBean.saveSlot}"
+                                         styleClass="btn btn-cta" />
+                    </div>
+
+                </h:form>
+
+            </div>
+        </main>
+
+    </div>
+
+</h:body>
+</html>

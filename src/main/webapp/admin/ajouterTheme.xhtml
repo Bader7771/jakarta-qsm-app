@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<ui:composition template="/templates/template.xhtml">
+
+    <ui:define name="title">Thèmes · Admin</ui:define>
+    <ui:define name="adminName">Admin #{adminBean.username}</ui:define>
+
+    <ui:define name="pageTitle">Gestion des thèmes</ui:define>
+    <ui:define name="pageSubtitle">
+        Ajoutez, modifiez et supprimez les thèmes disponibles pour les examens.
+    </ui:define>
+
+    <ui:define name="content">
+
+        <h:form id="formTheme">
+
+            <!-- CARTE NOUVEAU THEME -->
+            <div class="card theme-card-head">
+                <div class="card-header">
+                    <h2 class="card-title">Nouveau thème</h2>
+                    <p class="card-subtitle">
+                        Créez un thème ou modifiez un thème existant.
+                    </p>
+                </div>
+
+                <div class="theme-head-grid">
+
+                    <div class="theme-field">
+                        <h:outputLabel for="libelle" value="Libellé du thème" />
+                        <h:inputText id="libelle"
+                                     value="#{themeBean.theme.libelle}"
+                                     required="true"
+                                     styleClass="theme-input" />
+                    </div>
+
+                    <div class="theme-actions">
+                        <!-- Enregistrer -->
+                        <h:commandButton value="Enregistrer"
+                                         styleClass="btn btn-cta theme-btn theme-primary">
+                            <f:ajax execute="@form"
+                                    listener="#{themeBean.ajouter}"
+                                    render="formTheme:listeThemes formTheme:messages formTheme:libelle" />
+                        </h:commandButton>
+
+                        <!-- Retour dashboard -->
+                        <h:link outcome="dashboard"
+                                styleClass="btn btn-ghost theme-btn theme-secondary">
+                            Retour au Dashboard
+                        </h:link>
+                    </div>
+                </div>
+
+                <div class="theme-messages">
+                    <h:messages id="messages"
+                                globalOnly="true"
+                                showDetail="true" />
+                </div>
+            </div>
+
+            <!-- CARTE LISTE THEMES -->
+            <div class="card theme-card-list">
+                <div class="card-header">
+                    <h2 class="card-title">Thèmes existants</h2>
+                    <p class="card-subtitle">
+                        Liste des thèmes disponibles pour les examens.
+                    </p>
+                </div>
+
+                <div class="table-wrap">
+                    <h:dataTable id="listeThemes"
+                                 value="#{themeBean.themes}"
+                                 var="t"
+                                 styleClass="admin-table theme-table">
+
+                        <h:column>
+                            <f:facet name="header">Libellé</f:facet>
+                            #{t.libelle}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Modifier</f:facet>
+                            <h:commandButton value="Modifier"
+                                             styleClass="btn btn-ghost theme-btn-small">
+                                <f:ajax execute="@this"
+                                        listener="#{themeBean.editTheme(t)}"
+                                        render="formTheme" />
+                            </h:commandButton>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Supprimer</f:facet>
+                            <h:commandButton value="Supprimer"
+                                             styleClass="btn btn-ghost theme-btn-small"
+                                             onclick="return confirm('Supprimer ce thème ?');">
+                                <f:ajax execute="@this"
+                                        listener="#{themeBean.deleteTheme(t.id)}"
+                                        render="formTheme:listeThemes formTheme:messages formTheme:libelle" />
+                            </h:commandButton>
+                        </h:column>
+
+                    </h:dataTable>
+                </div>
+            </div>
+
+        </h:form>
+
+        <!-- SCRIPT ANIMATION CURSEUR SUR BOUTONS -->
+        <script type="text/javascript">
+        //<![CDATA[
+        document.addEventListener("mousemove", function (e) {
+            document.querySelectorAll("#formTheme .theme-btn, #formTheme .theme-btn-small")
+                .forEach(function (btn) {
+                    var rect = btn.getBoundingClientRect();
+                    var x = ((e.clientX - rect.left) / rect.width) * 100;
+                    var y = ((e.clientY - rect.top) / rect.height) * 100;
+                    btn.style.setProperty("--mx", x + "%");
+                    btn.style.setProperty("--my", y + "%");
+                });
+        });
+        //]]>
+        </script>
+
+    </ui:define>
+
+</ui:composition>
+</html>

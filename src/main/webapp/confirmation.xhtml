@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+
+<h:head>
+    <title>Confirmation d'inscription</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <h:outputStylesheet library="css" name="confirmation.css" />
+</h:head>
+
+<h:body class="confirm-shell">
+
+    <div class="confirm-layout">
+
+        <!-- HEADER -->
+        <header class="confirm-header">
+            <div class="brand">
+                <div class="brand-icon">T</div>
+                <div class="brand-meta">
+                    <div class="brand-title">TestPlatform</div>
+                    <div class="brand-subtitle">Confirmation d'inscription</div>
+                </div>
+            </div>
+
+            <div class="header-text">
+                <h1>Inscription confirmée</h1>
+                <p>Votre participation au test est enregistrée. Gardez bien les informations ci‑dessous.</p>
+            </div>
+        </header>
+
+        <!-- CARTE PRINCIPALE -->
+        <main class="confirm-main">
+            <div class="confirm-card">
+
+                <div class="status-row">
+                    <div class="status-icon">✓</div>
+                    <div>
+                        <h2 class="confirm-title">Inscription validée</h2>
+                        <p class="confirm-subtitle">
+                            Votre inscription au test a été enregistrée avec succès.
+                        </p>
+                    </div>
+                </div>
+
+                <section class="exam-info">
+                    <h3 class="section-title">Informations de votre examen</h3>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Date</span>
+                            <span class="info-value">
+                                #{examSlotBean.dateExam}
+                            </span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Heure de début</span>
+                            <span class="info-value">
+                                #{examSlotBean.startTime}
+                            </span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Durée</span>
+                            <span class="info-value">60 minutes</span>
+                        </div>
+
+                        <div class="info-item code-item">
+                            <span class="info-label">Code de session</span>
+                            <span class="info-value code-value">
+                                #{examSlotBean.sessionCode}
+                            </span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="warning-block">
+                    <h4>Important</h4>
+                    <p>
+                        Conservez soigneusement votre <b>code de session</b>. Il vous sera demandé
+                        pour accéder au test le jour de l'examen.
+                    </p>
+                </section>
+
+                <h:form>
+                    <div class="actions-row">
+                        <h:commandButton value="Accéder au test"
+                                         action="login-test"
+                                         styleClass="btn btn-cta" />
+
+                        <h:outputLink value="#{request.contextPath}/index.xhtml"
+                                      styleClass="btn btn-ghost">
+                            Retour à l'accueil
+                        </h:outputLink>
+                    </div>
+                </h:form>
+
+            </div>
+        </main>
+
+    </div>
+
+</h:body>
+</html>

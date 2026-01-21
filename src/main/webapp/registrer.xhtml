@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+<h:head>
+    <title>Inscription Candidat</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <h:outputStylesheet library="css" name="inscription.css" />
+
+    <!-- fade-in de la page -->
+    <style>
+        body.page-fade {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        body.page-fade.page-visible {
+            opacity: 1;
+        }
+
+        /* fond image */
+        .inscription-shell {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            box-sizing: border-box;
+
+            background-image: url("#{resource['images/pg-inscription.jpg']}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+
+    <script type="text/javascript">
+        // fait apparaître la page en fondu
+        document.addEventListener('DOMContentLoaded', function () {
+            document.body.classList.add('page-fade');
+            requestAnimationFrame(function () {
+                document.body.classList.add('page-visible');
+            });
+        });
+    </script>
+</h:head>
+
+<h:body class="inscription-shell">
+
+    <div class="inscription-layout">
+
+        <!-- HEADER -->
+        <header class="inscription-header">
+            <div class="brand">
+                <div class="brand-icon">T</div>
+                <div class="brand-meta">
+                    <div class="brand-title">TestPlatform</div>
+                    <div class="brand-subtitle">Inscription au test</div>
+                </div>
+            </div>
+
+            <div class="header-text">
+                <h1>Inscription candidat</h1>
+                <p>Renseignez vos informations pour participer aux sessions de test en ligne.</p>
+            </div>
+        </header>
+
+        <!-- MAIN / FORMULAIRE -->
+        <main class="inscription-main">
+
+            <div class="form-card">
+
+                <h2 class="form-title">Créer votre profil</h2>
+                <p class="form-subtitle">
+                    Les informations ci-dessous seront utilisées pour vous identifier
+                    et vous envoyer les résultats de vos évaluations.
+                </p>
+
+                <h:form styleClass="form-grid">
+
+                    <div class="form-field">
+                        <label for="nom">Nom *</label>
+                        <h:inputText id="nom"
+                                     value="#{candidateBean.candidate.nom}"
+                                     required="true"
+                                     styleClass="input" />
+                    </div>
+
+                    <div class="form-field">
+                        <label for="prenom">Prénom *</label>
+                        <h:inputText id="prenom"
+                                     value="#{candidateBean.candidate.prenom}"
+                                     required="true"
+                                     styleClass="input" />
+                    </div>
+
+                    <div class="form-field">
+                        <label for="ecole">École *</label>
+                        <h:inputText id="ecole"
+                                     value="#{candidateBean.candidate.ecole}"
+                                     required="true"
+                                     styleClass="input" />
+                    </div>
+
+                    <div class="form-field">
+                        <label for="filiere">Filière</label>
+                        <h:inputText id="filiere"
+                                     value="#{candidateBean.candidate.filiere}"
+                                     styleClass="input" />
+                    </div>
+
+                    <div class="form-field">
+                        <label for="email">Email *</label>
+                        <h:inputText id="email"
+                                     value="#{candidateBean.candidate.email}"
+                                     required="true"
+                                     styleClass="input" />
+                    </div>
+
+                    <div class="form-field">
+                        <label for="gsm">GSM *</label>
+                        <h:inputText id="gsm"
+                                     value="#{candidateBean.candidate.gsm}"
+                                     required="true"
+                                     styleClass="input" />
+                    </div>
+
+                    <h:messages globalOnly="true"
+                                showDetail="true"
+                                styleClass="jsf-messages" />
+
+                    <div class="form-actions">
+                        <h:commandButton value="S'inscrire"
+                                         action="#{candidateBean.register}"
+                                         styleClass="btn btn-cta" />
+                        <h:link outcome="index" styleClass="btn btn-ghost">
+                            Retour à l’accueil
+                        </h:link>
+                    </div>
+
+                </h:form>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Animation halo boutons -->
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.btn').forEach(function (btn) {
+            btn.addEventListener('mousemove', function (e) {
+                var r = btn.getBoundingClientRect();
+                var x = ((e.clientX - r.left) / r.width) * 100;
+                var y = ((e.clientY - r.top) / r.height) * 100;
+                btn.style.setProperty('--mx', x + '%');
+                btn.style.setProperty('--my', y + '%');
+            });
+        });
+    });
+    </script>
+
+</h:body>
+</html>

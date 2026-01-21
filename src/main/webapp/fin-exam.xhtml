@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+
+<h:head>
+    <title>Fin de l'examen</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <h:outputStylesheet library="css" name="finish-exam.css" />
+</h:head>
+
+<h:body class="finish-shell">
+
+    <div class="finish-layout">
+
+        <!-- HEADER -->
+        <header class="finish-header">
+            <div class="brand">
+                <div class="brand-icon">T</div>
+                <div class="brand-meta">
+                    <div class="brand-title">TestPlatform</div>
+                    <div class="brand-subtitle">Fin de l'examen</div>
+                </div>
+            </div>
+
+            <div class="header-text">
+                <h1>Examen terminé</h1>
+                <p>Merci d’avoir complété votre session d’évaluation.</p>
+            </div>
+        </header>
+
+        <!-- CONTENU -->
+        <main class="finish-main">
+            <div class="finish-card">
+
+                <div class="status-row">
+                    <div class="status-icon">✓</div>
+                    <div>
+                        <h2 class="finish-title">
+                            Merci
+                            #{testSessionBean.currentSession.candidate.prenom}
+                            #{testSessionBean.currentSession.candidate.nom}
+                        </h2>
+                        <p class="finish-subtitle">
+                            Vos réponses ont bien été enregistrées.
+                        </p>
+                    </div>
+                </div>
+
+                <section class="summary-section">
+                    <p class="summary-text">
+                        Vous avez terminé l’examen du thème
+                        <b>#{testSessionBean.currentAttempt.theme.libelle}</b>.
+                    </p>
+
+                    <p class="summary-text">
+                        <b>Votre score :</b>
+                        <span class="score-value">
+                            #{testSessionBean.score} / #{testSessionBean.total}
+                        </span>
+                    </p>
+                </section>
+
+                <section class="info-block">
+                    <p>
+                        Vous pouvez maintenant fermer cette page.
+                        Si une communication des résultats détaillés est prévue,
+                        vous la recevrez ultérieurement par les canaux habituels.
+                    </p>
+                </section>
+
+            </div>
+        </main>
+
+    </div>
+
+</h:body>
+</html>

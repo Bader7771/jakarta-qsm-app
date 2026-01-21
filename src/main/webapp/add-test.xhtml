@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html">
+<h:head>
+    <title>Examen</title>
+</h:head>
+<h:body>
+
+<h2>📝 Votre examen est prêt !</h2>
+<p>Bienvenue, #{testLoginBean.session.candidate.nom} #{testLoginBean.session.candidate.prenom}. Vous avez accès à votre examen.</p>
+
+<!-- Afficher les détails de l'examen ici -->
+<p>Date de l'examen: #{testLoginBean.session.examSlot.dateExam}</p>
+<p>Heure de début: #{testLoginBean.session.examSlot.startTime}</p>
+<p>Durée: 60 minutes</p>
+
+</h:body>
+</html>

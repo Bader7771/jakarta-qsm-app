@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+<h:head>
+    <title>Examen en ligne</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- CSS externe -->
+    <h:outputStylesheet library="css" name="exam.css" />
+</h:head>
+
+<h:body class="exam-shell">
+
+    <div class="exam-layout">
+
+        <!-- HEADER -->
+        <header class="exam-header">
+            <div class="brand">
+                <div class="brand-icon">T</div>
+                <div class="brand-meta">
+                    <div class="brand-title">TestPlatform</div>
+                    <div class="brand-subtitle">Examen en ligne</div>
+                </div>
+            </div>
+
+            <div class="header-text">
+                <h1>Examen en cours</h1>
+                <p>Répondez à chaque question avant la fin du temps imparti.</p>
+            </div>
+        </header>
+
+        <!-- CONTENU PRINCIPAL -->
+        <main class="exam-main">
+
+            <div class="top-row">
+
+                <!-- Infos session -->
+                <section class="session-info">
+                    <p class="session-info-title">Informations candidat</p>
+                    <p>
+                        <b>Nom :</b>
+                        #{testSessionBean.currentSession.candidate.nom}<br/>
+                        <b>Prénom :</b>
+                        #{testSessionBean.currentSession.candidate.prenom}<br/>
+                        <b>Email :</b>
+                        #{testSessionBean.currentSession.candidate.email}
+                    </p>
+
+                    <p style="margin-top:10px;">
+                        <b>Thème :</b>
+                        #{empty testSessionBean.currentTheme
+                          ? testSessionBean.currentSession.theme.libelle
+                          : testSessionBean.currentTheme.libelle}
+                    </p>
+                </section>
+
+                <!-- TIMER -->
+                <aside class="timer-card">
+                    <div class="timer-label">Temps restant</div>
+                    <div id="timer" class="timer-value">--:--</div>
+                    <div class="timer-hint">Le test passera à la question suivante lorsque le temps sera écoulé.</div>
+                </aside>
+
+            </div>
+
+            <!-- QUESTION COURANTE -->
+            <h:form id="formExam" styleClass="exam-form">
+
+                <section class="question-card">
+
+                    <h:panelGroup rendered="#{not empty testSessionBean.currentQuestion}">
+
+                        <div class="question-header">
+                            <h2 class="question-title">
+                                Question #{testSessionBean.currentIndex + 1}
+                            </h2>
+                            <span class="question-type">
+                                #{testSessionBean.currentQuestion.type eq 'UNIQUE'
+                                  ? 'Réponse unique'
+                                  : 'Réponses multiples'}
+                            </span>
+                        </div>
+
+                        <p class="question-text">
+                            #{testSessionBean.currentQuestion.contenu}
+                        </p>
+
+                        <!-- UNIQUE -->
+                        <h:selectOneRadio
+                            rendered="#{testSessionBean.currentQuestion.type eq 'UNIQUE'}"
+                            value="#{testSessionBean.selectedSingleAnswer}"
+                            layout="pageDirection"
+                            styleClass="choice-group">
+
+                            <f:selectItems
+                                value="#{testSessionBean.currentQuestion.reponses}"
+                                var="r"
+                                itemValue="#{r.id}"
+                                itemLabel="#{r.contenu}" />
+                        </h:selectOneRadio>
+
+                        <!-- MULTIPLE -->
+                        <h:selectManyCheckbox
+                            rendered="#{testSessionBean.currentQuestion.type eq 'MULTIPLE'}"
+                            value="#{testSessionBean.selectedMultipleAnswers}"
+                            layout="pageDirection"
+                            styleClass="choice-group">
+
+                            <f:selectItems
+                                value="#{testSessionBean.currentQuestion.reponses}"
+                                var="r"
+                                itemValue="#{r.id}"
+                                itemLabel="#{r.contenu}" />
+                        </h:selectManyCheckbox>
+
+                    </h:panelGroup>
+
+                </section>
+
+                <!-- BOUTONS -->
+                <div class="actions-row">
+                    <h:commandButton value="Suivant"
+                                     action="#{testSessionBean.nextQuestion}"
+                                     rendered="#{!testSessionBean.lastQuestion}"
+                                     styleClass="btn btn-ghost" />
+
+                    <h:commandButton value="Terminer l'examen"
+                                     action="#{testSessionBean.validerExam}"
+                                     rendered="#{testSessionBean.lastQuestion}"
+                                     styleClass="btn btn-cta" />
+                </div>
+
+                <!-- BOUTON CACHÉ POUR LE TIMER -->
+                <h:commandButton id="nextBtn"
+                                 action="#{testSessionBean.nextQuestion}"
+                                 style="display:none"
+                                 rendered="#{!testSessionBean.lastQuestion}" />
+
+            </h:form>
+
+        </main>
+
+    </div>
+
+    <!-- SCRIPT TIMER -->
+    <script type="text/javascript">
+//<![CDATA[
+        let timeLeft = #{testSessionBean.durationSeconds};
+        let timerId = null;
+
+        function startTimer() {
+            updateTimer();
+
+            timerId = setInterval(function () {
+                timeLeft--;
+                updateTimer();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    var btn = document.getElementById("formExam:nextBtn");
+                    if (btn) {
+                        btn.click();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            var m = Math.floor(timeLeft / 60);
+            var s = timeLeft % 60;
+            var el = document.getElementById("timer");
+            if (el) {
+                el.innerHTML = m + ":" + (s < 10 ? "0" : "") + s;
+            }
+        }
+
+        window.onload = startTimer;
+//]]>
+    </script>
+
+</h:body>
+</html>

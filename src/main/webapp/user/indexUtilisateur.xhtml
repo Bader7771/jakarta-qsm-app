@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<ui:composition template="/templates/template-simple.xhtml">
+
+    <ui:define name="content">
+
+        <h:form id="userHome">
+
+            <h2>Bienvenue sur la plateforme de tests</h2>
+
+            <!-- Zone actions rapides -->
+            <h:panelGroup layout="block" style="margin-bottom:20px;">
+                <h:commandButton value="Commencer un test"
+                                 action="/user/choisirTheme?faces-redirect=true"/>
+                <h:commandButton value="Mes résultats"
+                                 action="/user/mesResultats?faces-redirect=true"
+                                 style="margin-left:10px;"/>
+                <h:commandButton value="Mon profil"
+                                 action="/user/profil?faces-redirect=true"
+                                 style="margin-left:10px;"/>
+            </h:panelGroup>
+
+            <h:messages globalOnly="true" showDetail="true"/>
+
+            <h:panelGroup layout="block" style="margin-top:20px;">
+                <h3>Thèmes disponibles</h3>
+                <h:dataTable value="#{userHomeBean.themesDisponibles}"
+                             var="t"
+                             border="1">
+
+                    <h:column>
+                        <f:facet name="header">Thème</f:facet>
+                        #{t.libelle}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Action</f:facet>
+                        <h:commandButton value="Voir tests"
+                                         action="#{userHomeBean.voirTests(t.id)}"/>
+                    </h:column>
+                </h:dataTable>
+            </h:panelGroup>
+
+            <h:panelGroup layout="block" style="margin-top:20px;">
+                <h3>Mes derniers résultats</h3>
+                <h:dataTable value="#{userHomeBean.derniersAttempts}"
+                             var="a"
+                             border="1">
+
+                    <h:column>
+                        <f:facet name="header">Thème</f:facet>
+                        #{a.theme.libelle}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Score</f:facet>
+                        #{a.score} / #{a.scoreMax}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Date</f:facet>
+                        #{a.dateAttempt}
+                    </h:column>
+                </h:dataTable>
+            </h:panelGroup>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
+
+</html>

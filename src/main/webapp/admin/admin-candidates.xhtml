@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<ui:composition template="/templates/template.xhtml">
+
+    <ui:define name="pageTitle">
+        Validation des candidats
+    </ui:define>
+
+    <ui:define name="pageSubtitle">
+        Valide ou invalide les inscriptions des candidats.
+    </ui:define>
+
+    <ui:define name="content">
+
+        <!-- En-tête de page -->
+        <div class="card page-head-card">
+            <div class="page-head-main">
+                <div>
+                    <h2 class="page-title">Validation des inscriptions</h2>
+                    <p class="page-subtitle">
+                        Liste des candidats avec leur état de validation.
+                    </p>
+                </div>
+
+                <h:form>
+                    <h:commandButton value="Retour à l'administration"
+                                     styleClass="theme-btn theme-btn-small btn-ghost theme-secondary"
+                                     action="/admin/dashboard?faces-redirect=true"/>
+                </h:form>
+            </div>
+        </div>
+
+        <!-- Tableau des candidats -->
+        <div class="card page-table-card">
+            <div class="card-header">
+                <h3 class="card-title">Candidats inscrits</h3>
+                <p class="card-subtitle">
+                    Valide ou invalide chaque candidat. Un email est envoyé automatiquement lors de la validation.
+                </p>
+            </div>
+
+            <div class="table-wrap">
+                <h:form id="candidatesForm">
+
+                    <h:dataTable id="candidatesTable"
+                                 value="#{adminCandidateBean.candidats}"
+                                 var="c"
+                                 styleClass="admin-table theme-table">
+
+                        <h:column>
+                            <f:facet name="header">Nom</f:facet>
+                            #{c.nom}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Prénom</f:facet>
+                            #{c.prenom}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">École</f:facet>
+                            #{c.ecole}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Email</f:facet>
+                            #{c.email}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">GSM</f:facet>
+                            #{c.gsm}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">État</f:facet>
+                            #{c.validated ? 'Validé' : 'Non validé'}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Action</f:facet>
+
+                            <div class="table-actions">
+
+                                <!-- Bouton Valider (affiché si non validé) -->
+                                <h:commandButton value="Valider"
+                                                 styleClass="theme-btn-small btn-ghost"
+                                                 action="#{adminCandidateBean.valider(c.id)}"
+                                                 rendered="#{!c.validated}">
+                                    <f:ajax execute="@this"
+                                            render="candidatesTable"/>
+                                </h:commandButton>
+
+                                <!-- Bouton Invalider (affiché si validé) -->
+                                <h:commandButton value="Invalider"
+                                                 styleClass="theme-btn-small btn-ghost btn-danger"
+                                                 action="#{adminCandidateBean.invalider(c.id)}"
+                                                 rendered="#{c.validated}">
+                                    <f:ajax execute="@this"
+                                            render="candidatesTable"/>
+                                </h:commandButton>
+
+                            </div>
+                        </h:column>
+
+                    </h:dataTable>
+
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>
+</html>

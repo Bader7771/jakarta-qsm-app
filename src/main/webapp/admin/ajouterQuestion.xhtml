@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<ui:composition template="/templates/template.xhtml">
+
+    <ui:define name="pageTitle">
+        Gestion des questions
+    </ui:define>
+
+    <ui:define name="pageSubtitle">
+        Crée, modifie et supprime les questions associées à chaque thème.
+    </ui:define>
+
+    <ui:define name="content">
+
+        <!-- En-tête secondaire (bouton retour) -->
+        <div class="card page-head-card">
+            <div class="page-head-main">
+                <div>
+                    <h2 class="page-title">Questions</h2>
+                    <p class="page-subtitle">
+                        Ajoute une nouvelle question ou mets à jour une question existante.
+                    </p>
+                </div>
+
+                <h:form>
+                    <h:commandButton value="Retour à l'administration"
+                                     styleClass="theme-btn theme-btn-small btn-ghost theme-secondary"
+                                     action="/admin/dashboard?faces-redirect=true"/>
+                </h:form>
+            </div>
+        </div>
+
+        <!-- Formulaire question -->
+        <div class="card page-form-card">
+            <h:form id="formQuestion">
+
+                <div class="theme-head-grid">
+
+                    <!-- Thème -->
+                    <div class="theme-field">
+                        <label class="theme-field-label">Thème</label>
+                        <h:selectOneMenu value="#{questionBean.selectedThemeId}"
+                                         required="true"
+                                         styleClass="theme-input">
+                            <f:selectItem itemLabel="-- Choisir un thème --"
+                                          itemValue="#{null}"/>
+                            <f:selectItems value="#{questionBean.themes}"
+                                           var="t"
+                                           itemValue="#{t.id}"
+                                           itemLabel="#{t.libelle}"/>
+                        </h:selectOneMenu>
+                    </div>
+
+                    <!-- Type -->
+                    <div class="theme-field">
+                        <label class="theme-field-label">Type</label>
+                        <h:selectOneMenu value="#{questionBean.question.type}"
+                                         styleClass="theme-input">
+                            <f:selectItem itemValue="UNIQUE" itemLabel="Réponse unique"/>
+                            <f:selectItem itemValue="MULTIPLE" itemLabel="Réponses multiples"/>
+                        </h:selectOneMenu>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="theme-actions">
+                        <h:commandButton value="Enregistrer"
+                                         styleClass="theme-btn btn-cta theme-primary"
+                                         action="#{questionBean.ajouterQuestion}">
+                            <f:ajax execute="@form"
+                                    render="formQuestion listeQuestions messages"/>
+                        </h:commandButton>
+
+                        <h:commandButton value="Réinitialiser"
+                                         styleClass="theme-btn theme-btn-small btn-ghost"
+                                         action="#{questionBean.reset}">
+                            <f:ajax execute="@this"
+                                    render="formQuestion messages"/>
+                        </h:commandButton>
+                    </div>
+                </div>
+
+                <div class="theme-field theme-field-full">
+                    <label class="theme-field-label">Intitulé de la question</label>
+                    <h:inputTextarea value="#{questionBean.question.contenu}"
+                                     required="true"
+                                     rows="3"
+                                     cols="60"
+                                     styleClass="theme-input theme-textarea"/>
+                </div>
+
+                <h:messages id="messages"
+                            globalOnly="true"
+                            showDetail="true"
+                            styleClass="theme-messages"/>
+
+            </h:form>
+        </div>
+
+        <!-- Tableau des questions -->
+        <div class="card page-table-card">
+            <div class="card-header">
+                <h3 class="card-title">Questions existantes</h3>
+                <p class="card-subtitle">
+                    Liste des questions pour le thème sélectionné, avec actions Modifier/Supprimer.
+                </p>
+            </div>
+
+            <div class="table-wrap">
+                <h:dataTable id="listeQuestions"
+                             value="#{questionBean.questions}"
+                             var="q"
+                             styleClass="admin-table theme-table">
+
+                    <h:column>
+                        <f:facet name="header">Question</f:facet>
+                        #{q.contenu}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Type</f:facet>
+                        #{q.type}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Thème</f:facet>
+                        #{q.theme.libelle}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+
+                        <div class="table-actions">
+
+                            <!-- Modifier -->
+                            <h:form styleClass="inline-form">
+                                <h:commandButton value="Modifier"
+                                                 styleClass="theme-btn-small btn-ghost"
+                                                 action="#{questionBean.editQuestion(q)}">
+                                    <f:ajax execute="@this"
+                                            render=":formQuestion"/>
+                                </h:commandButton>
+                            </h:form>
+
+                            <!-- Supprimer -->
+                            <h:form styleClass="inline-form">
+                                <h:commandButton value="Supprimer"
+                                                 styleClass="theme-btn-small btn-ghost btn-danger"
+                                                 action="#{questionBean.deleteQuestion(q)}"
+                                                 onclick="return confirm('Supprimer cette question ?');">
+                                    <f:ajax execute="@this"
+                                            render="listeQuestions :formQuestion :messages"/>
+                                </h:commandButton>
+                            </h:form>
+
+                        </div>
+                    </h:column>
+
+                </h:dataTable>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>
+</html>
